@@ -1,0 +1,56 @@
+name: RSS Ingestion
+
+# Runs every 30 minutes to pull fresh articles from all active sources.
+# Uses GitHub Actions' free cron — 2000 private-repo minutes/month, way more
+# than enough: each run is ~2-3 minutes, so ~3 hours/day = ~90 hours/month.
+#
+# Secrets required in repo settings → Secrets and variables → Actions:
+#   DATABASE_URL   — Supabase pooled connection string (postgresql+asyncpg://...)
+#   JWT_SECRET     — anything non-empty (worker doesn't use it, but config loads)
+
+on:
+  schedule:
+    # Every 30 minutes. Cron format: "m h d M w" — UTC.
+    - cron: "*/30 * * * *"
+  # Also allow manual triggers from the Actions UI
+  workflow_dispatch:
+
+concurrency:
+  # If a run is already going, skip new ones — never overlap
+  group: ingest-rss
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    name: Pull RSS feeds
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install deps
+        run: |
+          uv venv
+          source .venv/bin/activate
+          uv pip install -e "."
+
+      - name: Run ingestion
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          APP_ENV: prod
+          LOG_FORMAT: json
+          LOG_LEVEL: INFO
+        run: |
+          source .venv/bin/activate
+          python -m app.workers.ingest_rss

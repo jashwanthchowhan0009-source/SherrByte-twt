@@ -1,0 +1,42 @@
+name: Seed Sources
+
+# Manually triggered. Run this ONCE after your first `alembic upgrade head`
+# to populate the `sources` table with the 24 curated Indian RSS feeds.
+# Safe to re-run — it's an upsert, so it refreshes metadata on existing rows.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  seed:
+    name: Seed sources table
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install deps
+        run: |
+          uv venv
+          source .venv/bin/activate
+          uv pip install -e "."
+
+      - name: Run seeder
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          APP_ENV: prod
+          LOG_FORMAT: json
+        run: |
+          source .venv/bin/activate
+          python -m app.workers.seed_sources
