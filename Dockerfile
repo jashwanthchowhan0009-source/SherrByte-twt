@@ -20,7 +20,10 @@ COPY pyproject.toml ./
 # Install into a virtualenv we'll copy over to the runtime stage
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Step 1: Install build tools and dependencies directly from pyproject.toml
+RUN pip install --upgrade pip && \
+    pip install hatchling && \
+    pip install --no-cache-dir .
 
 # ---------- Runtime: slim, non-root ----------
 FROM python:3.12-slim AS runtime
