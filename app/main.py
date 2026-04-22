@@ -95,7 +95,7 @@ def create_app() -> FastAPI:
     # CORS — lock this down as soon as you know your frontend origins
     if settings.cors_origins:
         app.add_middleware(
-            CORSMiddleware,
+            CORSMiddleware,app = create_app()
             allow_origins=settings.cors_origins,
             allow_credentials=True,
             allow_methods=["*"],
@@ -146,3 +146,9 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+if __name__ == "__main__":
+    import uvicorn
+    import os
+    # Pull port from Render's environment, default to 10000 if not found
+    port = int(os.environ.get("PORT", 10000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
