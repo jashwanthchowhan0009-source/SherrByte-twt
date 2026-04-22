@@ -8,6 +8,11 @@ from fastapi import APIRouter
 
 from app.api.v1 import articles, auth, health
 
+from app.api.v1.endpoints import feed, interactions, onboarding
+
+api_router.include_router(feed.router, tags=["feed"])
+api_router.include_router(interactions.router, tags=["interactions"])
+api_router.include_router(onboarding.router, tags=["onboarding"])
 api_router = APIRouter(prefix="/v1")
 api_router.include_router(health.router, tags=["health"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
