@@ -20,7 +20,7 @@ COPY pyproject.toml ./
 # Install into a virtualenv we'll copy over to the runtime stage
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --upgrade pip && pip install .
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # ---------- Runtime: slim, non-root ----------
 FROM python:3.12-slim AS runtime
