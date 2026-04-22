@@ -6,7 +6,7 @@ response. No SQL, no business rules here.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Request, status
+from fastapi import APIRouter, Request, Response, status
 
 from app.deps import DB, CurrentUser, limiter
 from app.schemas.auth import (
@@ -90,8 +90,10 @@ async def refresh(request: Request, payload: RefreshRequest, db: DB) -> TokenPai
     status_code=status.HTTP_204_NO_CONTENT,
     summary="Revoke the given refresh token",
 )
-async def logout(payload: LogoutRequest, db: DB) -> None:
+async def logout(payload: LogoutRequest, db: DB) -> Response:
+    """Fixes the AssertionError by returning a proper No Content response."""
     await AuthService(db).logout(raw_refresh_token=payload.refresh_token)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get("/me", response_model=UserOut, summary="Current authenticated user")
