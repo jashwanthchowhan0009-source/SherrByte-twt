@@ -14,7 +14,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.deps import get_current_user, get_session
+from app.api.v1.deps import get_current_user, get_session
 from app.models.interactions import OnboardingState
 from app.schemas.feed import OnboardingStatus, SourceOptOut, TopicSelection
 from app.services.affinity import seed_explicit_weights

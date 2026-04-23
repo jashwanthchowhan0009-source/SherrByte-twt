@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#080B14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SherrByte">
+<meta name="description" content="AI-powered hyper-personalised Indian news">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<title>SherrByte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- ── SPLASH ── -->
+<div id="splash">
+  <div class="splash-logo">
+    <span class="logo-s">S</span><span class="logo-rest">herrByte</span>
+  </div>
+  <div class="splash-tagline">India's pulse, your frequency.</div>
+</div>
+
+<!-- ── AUTH SCREEN ── -->
+<div id="auth-screen" class="screen hidden">
+  <div class="auth-bg"></div>
+  <div class="auth-container">
+    <div class="auth-brand">
+      <div class="auth-logo">SherrByte</div>
+      <p class="auth-sub">AI-powered news, built for India.</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Sign In</button>
+        <button class="auth-tab" data-tab="register">Create Account</button>
+      </div>
+      <div id="login-form" class="auth-form">
+        <div class="field-group">
+          <label>Email</label>
+          <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="field-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn-primary" id="btn-login">Sign In</button>
+        <p class="auth-error hidden" id="login-error"></p>
+      </div>
+      <div id="register-form" class="auth-form hidden">
+        <div class="field-group">
+          <label>Display Name</label>
+          <input type="text" id="reg-name" placeholder="Your name">
+        </div>
+        <div class="field-group">
+          <label>Email</label>
+          <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="field-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="Min 8 characters" autocomplete="new-password">
+        </div>
+        <button class="btn-primary" id="btn-register">Create Account</button>
+        <p class="auth-error hidden" id="reg-error"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ONBOARDING SCREEN ── -->
+<div id="onboarding-screen" class="screen hidden">
+  <div class="ob-header">
+    <div class="ob-logo">SherrByte</div>
+    <div class="ob-step">Step 1 of 2</div>
+  </div>
+  <div class="ob-body">
+    <h1 class="ob-title">What moves<br><em>your world?</em></h1>
+    <p class="ob-hint">Pick at least 5 topics. Your feed will be built around these.</p>
+    <div class="topic-grid" id="topic-grid">
+      <!-- Populated by JS from /v1/taxonomy -->
+    </div>
+    <div class="ob-footer">
+      <span id="ob-count">0 selected</span>
+      <button class="btn-primary" id="btn-ob-continue" disabled>Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN APP ── -->
+<div id="app" class="screen hidden">
+
+  <!-- Top bar -->
+  <header id="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">SherrByte</div>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" id="btn-search" aria-label="Search">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <div class="avatar" id="user-avatar">J</div>
+    </div>
+  </header>
+
+  <!-- Pillar nav -->
+  <nav id="pillar-nav">
+    <div class="pillar-track" id="pillar-track">
+      <button class="pillar-btn active" data-pillar="">For You</button>
+      <!-- Populated from taxonomy -->
+    </div>
+  </nav>
+
+  <!-- Feed -->
+  <main id="feed-container">
+    <div id="feed-list">
+      <!-- Skeleton loaders shown while loading -->
+      <div class="skeleton-hero"></div>
+      <div class="skeleton-hero"></div>
+      <div class="skeleton-row"></div>
+      <div class="skeleton-row"></div>
+      <div class="skeleton-row"></div>
+    </div>
+    <div id="load-more-trigger"></div>
+    <div id="feed-end" class="hidden">
+      <p>You're all caught up ✦</p>
+    </div>
+  </main>
+
+  <!-- Bottom nav -->
+  <nav id="bottom-nav">
+    <button class="nav-item active" data-view="feed">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Feed</span>
+    </button>
+    <button class="nav-item" data-view="trending">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      <span>Trending</span>
+    </button>
+    <button class="nav-item" data-view="saved">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+      <span>Saved</span>
+    </button>
+    <button class="nav-item" data-view="profile">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ── ARTICLE DETAIL ── -->
+<div id="article-detail" class="screen hidden">
+  <div id="detail-header">
+    <button class="back-btn" id="btn-back">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="detail-actions">
+      <button class="icon-btn" id="btn-save-article" aria-label="Save">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-share-article" aria-label="Share">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="detail-content">
+    <!-- Populated dynamically -->
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div id="toast" class="hidden"></div>
+
+<script src="js/api.js"></script>
+<script src="js/events.js"></script>
+<script src="js/feed.js"></script>
+<script src="js/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+</script>
+</body>
+</html>

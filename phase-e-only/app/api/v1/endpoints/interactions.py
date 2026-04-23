@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.deps import get_current_user, get_session
+from app.api.v1.deps import get_current_user
 from app.schemas.events import InteractionBatch, InteractionBatchResponse
 from app.services.event_buffer import publish_events
 

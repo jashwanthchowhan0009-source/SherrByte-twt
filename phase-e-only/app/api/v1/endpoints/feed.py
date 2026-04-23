@@ -21,8 +21,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# TRY THIS
-from app.deps import CurrentUser, get_session
+from app.api.v1.deps import get_current_user, get_session
 from app.models.interactions import FeedImpression, OnboardingState
 from app.schemas.feed import FeedArticle, FeedResponse
 from app.services.scorer import score_articles
