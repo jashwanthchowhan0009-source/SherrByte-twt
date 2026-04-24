@@ -1,7 +1,8 @@
 from sqlalchemy import Column, String, DateTime, JSON, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
-from app.db.base import Base 
+from app.db.session import Base
+
 import uuid
 
 class OnboardingState(Base):
