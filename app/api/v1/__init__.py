@@ -22,7 +22,7 @@ api_router.include_router(articles.router, prefix="/articles", tags=["articles"]
 api_router.include_router(articles.sources_router, prefix="/sources", tags=["sources"])
 api_router.include_router(articles.taxonomy_router, prefix="/taxonomy", tags=["taxonomy"])
 
-rom app.api.v1.endpoints import feed, interactions, onboarding
+from app.api.v1.endpoints import feed, interactions, onboarding
 
 api_router.include_router(feed.router,         tags=["feed"])
 api_router.include_router(interactions.router, tags=["interactions"])
