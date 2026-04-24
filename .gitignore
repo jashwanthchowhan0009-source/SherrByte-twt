@@ -40,3 +40,6 @@ logs/
 .fly/
 
 # Alembic (keep versions/, ignore local caches only)
+
+.vercel
+.env*.local

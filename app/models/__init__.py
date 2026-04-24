@@ -22,3 +22,4 @@ __all__ = [
     "Microtopic",
     "EMBEDDING_DIM",
 ]
+from .interactions import OnboardingState, FeedImpression
